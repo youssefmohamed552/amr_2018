@@ -63,6 +63,22 @@ handlePath( const nav_msgs::Path::ConstPtr& msg ){
 
 void
 GUI::
+handleProjection( const nav_msgs::Path::ConstPtr& msg ){
+	std::cout << "in handle projection" << std::endl;
+	_projection = *msg;
+	return;
+}
+
+void
+GUI::
+handleLookahead( const geometry_msgs::Point::ConstPtr& msg ){
+	_lookahead = *msg;
+	return;
+}
+
+
+void
+GUI::
 timer_callback( void ){
 	ros::spinOnce();
 	return;
@@ -101,6 +117,8 @@ paintGL(){
 	drawRobot( _odom.pose.pose, 0.0 , 0.0 , 0.0 , 0.1225 );
 	drawRobot( _goal, 0.0 , 1.0 , 0.0 , 0.1225 );
 	drawPath( _path , 1.0 , 0.0 , 0.0 , 1.0 );
+	drawPath( _projection, 1.0 , 0.0 , 1.0 , 1.0 );
+	drawPoint( _lookahead, 0.0 , 1.0 , 1.0 , 5.0 );
 	return;
 }
 
@@ -185,6 +203,18 @@ drawPath( const nav_msgs::Path& path , const double& red , const double& green, 
 	glEnd();
 	glLineWidth(1.0);
 	return ;
+}
+
+void
+GUI::
+drawPoint( const geometry_msgs::Point& point, const double& red, const double& green , const double& blue , const double& size ){
+	glPointSize( size );
+	glBegin( GL_POINTS );
+	glColor4f( red , green , blue , 1.0 );
+	glVertex3f( point.x , point.y, point.z );
+	glEnd();
+	glPointSize( 1 );
+	return;
 }
 
 void
